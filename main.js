@@ -32,3 +32,29 @@ L.marker([
 L.control.scale({
     imperial: false,
 }).addTo(map);
+
+// Geolocation
+map.locate({
+    setView: true,
+    watch: true,
+    maxZoom: 16
+});
+
+let circle = L.circle([0, 0], 0).addTo(map);
+let marker = L.marker([0, 0]).addTo(map);
+
+map.on('locationfound', function (evt) {
+    console.log(evt)
+    let radius = Math.round(evt.accuracy);
+
+    marker.setLatLng(evt.latlng);
+    marker.bindTooltip(`You are within ${radius} meters from this point`).openTooltip();
+
+    circle.setLatLng(evt.latlng);
+    circle.setRadius(radius);
+});
+
+map.on('locationerror', function (evt) {
+    console.log(evt)
+    alert(evt.message);
+});
